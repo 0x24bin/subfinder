@@ -126,23 +126,21 @@ func WriteOutputToDir(state *helper.State, subdomains []string, domain string) (
                file.Close()
 
                return nil
-          } else {
+          } 
+          _, err := os.Create(state.OutputDir + domain + "_hosts.json")
 
-               _, err := os.Create(state.OutputDir + domain + "_hosts.json")
+          if err != nil {
+               return err
+          }
 
-               if err != nil {
-                    return err
-               }
+          data, err := json.MarshalIndent(subdomains, "", "    ")
+          if err != nil {
+               return err
+          }
 
-               data, err := json.MarshalIndent(subdomains, "", "    ")
-               if err != nil {
-                    return err
-               }
-
-               // Write the output to file
-               err = ioutil.WriteFile(state.OutputDir+domain+"_hosts.json", data, 0644)
-
-               return nil
+          // Write the output to file
+          err = ioutil.WriteFile(state.OutputDir+domain+"_hosts.json", data, 0644)
+          return nil
           }
      }
 
